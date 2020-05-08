@@ -1,5 +1,15 @@
 scalar DateTime
 
+type Query {
+  user(id: ID!): IUser!
+  users: [SafeUser!]!
+}
+
+type Mutation {
+  registerUser(registerInput: RegisterUserInput!): AuthPayload!
+  login(loginInput: LoginInput!): AuthPayload!
+}
+
 interface IUser {
   id: ID!
   username: String!
@@ -31,14 +41,4 @@ input RegisterUserInput {
 input LoginInput {
   email: String!
   password: String!
-}
-
-type Query {
-  user(id: ID!): IUser!
-  users: [SafeUser!]!
-}
-
-type Mutation {
-  registerUser(registerInput: RegisterUserInput!): AuthPayload!
-  login(loginInput: LoginInput!): AuthPayload!
 }
