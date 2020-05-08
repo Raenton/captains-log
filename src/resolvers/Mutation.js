@@ -1,17 +1,3 @@
-// exports.post = (_parent, args, context) => {
-//   const { auth, prisma } = context
-//   const { title, body, description } = args
-
-//   const userId = auth.authenticate(context)
-
-//   return prisma.createPost({
-//     title,
-//     body,
-//     description,
-//     user: { connect: { id: userId }}
-//   })
-// }
-
 exports.registerUser = async (_parent, args, context) => {
   const { auth, prisma } = context
   const { username, email, password } = args.registerInput
@@ -41,4 +27,18 @@ exports.login = async (_parent, args, context) => {
   const token = auth.generateToken(user.id)
 
   return { token, user }
+}
+
+exports.post = async (_parent, args, context) => {
+  const { auth, prisma } = context
+  const { title, body, description } = args.postInput
+
+  const userId = auth.authenticate(context)
+  const post = await prisma.createPost({
+    title,
+    body,
+    description,
+    user: { connect: { id: userId }}
+  })
+  return post
 }

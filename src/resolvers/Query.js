@@ -14,3 +14,7 @@ exports.user = async (_parent, args, context) => {
       : null
   }
 }
+
+exports.posts = (_parent, args, context) => {
+  return context.prisma.posts()
+}
