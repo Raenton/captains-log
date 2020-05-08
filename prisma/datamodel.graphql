@@ -1,0 +1,24 @@
+type User {
+  id: ID! @id
+  username: String! @unique
+  email: String! @unique
+  passwordHash: String!
+  posts: [Post!]!
+  likes: [Like!]!
+}
+
+type Post {
+  id: ID! @id
+  title: String!
+  description: String!
+  body: String!
+  createdAt: DateTime! @createdAt
+  user: User!
+  likes: [Like!]!
+}
+
+type Like {
+  id: ID! @id
+  user: User!
+  post: Post!
+}

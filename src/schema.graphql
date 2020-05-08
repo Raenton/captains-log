@@ -1,0 +1,44 @@
+scalar DateTime
+
+interface IUser {
+  id: ID!
+  username: String!
+}
+
+type User implements IUser {
+  id: ID!
+  username: String!
+  email: String!
+}
+
+# cut out email address for privacy
+type SafeUser implements IUser {
+  id: ID!
+  username: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+input RegisterUserInput {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Query {
+  user(id: ID!): IUser!
+  users: [SafeUser!]!
+}
+
+type Mutation {
+  registerUser(registerInput: RegisterUserInput!): AuthPayload!
+  login(loginInput: LoginInput!): AuthPayload!
+}
