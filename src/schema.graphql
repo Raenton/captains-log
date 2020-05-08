@@ -3,6 +3,7 @@ scalar DateTime
 type Query {
   user(id: ID!): IUser!
   users: [SafeUser!]!
+  post(id: ID!): Post!
   posts: [Post!]!
 }
 
