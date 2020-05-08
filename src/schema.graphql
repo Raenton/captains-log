@@ -3,11 +3,13 @@ scalar DateTime
 type Query {
   user(id: ID!): IUser!
   users: [SafeUser!]!
+  posts: [Post!]!
 }
 
 type Mutation {
   registerUser(registerInput: RegisterUserInput!): AuthPayload!
   login(loginInput: LoginInput!): AuthPayload!
+  post(postInput: CreatePostInput!): Post!
 }
 
 interface IUser {
@@ -41,4 +43,19 @@ input RegisterUserInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreatePostInput {
+  title: String!
+  description: String
+  body: String
+}
+
+type Post {
+  id: ID!
+  title: String!
+  description: String
+  body: String
+  createdAt: DateTime!
+  user: SafeUser!
 }
