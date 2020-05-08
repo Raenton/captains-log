@@ -19,6 +19,11 @@ exports.getUserId = (context) => {
   return userId
 }
 
+exports.isCurrentUser = (context, id) => {
+  const userId = this.getUserId(context)
+  return (userId && userId === id)
+}
+
 // try catch?
 // if auth header is not implemented properly
 exports.getTokenFromHeader = (context) => {
