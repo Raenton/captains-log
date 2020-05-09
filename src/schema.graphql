@@ -1,5 +1,9 @@
 scalar DateTime
 
+type DeletedNode {
+  id: ID!
+}
+
 type Query {
   user(id: ID!): IUser!
   users: [SafeUser!]!
