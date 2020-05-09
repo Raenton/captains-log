@@ -6,32 +6,44 @@ type DeletedNode {
 
 type Query {
   user(id: ID!): IUser!
+  # should be a search / filter
   users: [SafeUser!]!
   post(id: ID!): Post!
+  # should be a search / filter
+  # also merged with searching for users
   posts: [Post!]!
 }
 
+# investigate how to semantically separate queries and mutations
 type Mutation {
   registerUser(registerInput: RegisterUserInput!): AuthPayload!
   login(loginInput: LoginInput!): AuthPayload!
   post(postInput: CreatePostInput!): Post!
+  like(postId: ID!): DeletedNode!
 }
 
 interface IUser {
   id: ID!
   username: String!
+  posts: [Post!]!
+  likes: [Like!]!
 }
 
 type User implements IUser {
   id: ID!
   username: String!
   email: String!
+  posts: [Post!]!
+  likes: [Like!]!
 }
 
+# see about removing the mass duplication between this and standard user
 # cut out email address for privacy
 type SafeUser implements IUser {
   id: ID!
   username: String!
+  posts: [Post!]!
+  likes: [Like!]!
 }
 
 type AuthPayload {
@@ -63,4 +75,11 @@ type Post {
   body: String
   createdAt: DateTime!
   user: SafeUser!
+  likes: [Like!]!
+}
+
+type Like {
+  id: ID!
+  user: SafeUser!
+  post: Post!
 }
