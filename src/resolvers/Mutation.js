@@ -43,7 +43,7 @@ exports.post = async (_parent, args, context) => {
   return post
 }
 
-exports.like = async (_parent, args, context) => {
+exports.toggleLike = async (_parent, args, context) => {
   const { auth, prisma } = context
   const { postId } = args
   const userId = auth.authenticate(context)

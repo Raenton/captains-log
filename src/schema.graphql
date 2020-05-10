@@ -1,9 +1,5 @@
 scalar DateTime
 
-type DeletedNode {
-  id: ID!
-}
-
 type Query {
   user(id: ID!): IUser!
   # should be a search / filter
@@ -19,7 +15,7 @@ type Mutation {
   registerUser(registerInput: RegisterUserInput!): AuthPayload!
   login(loginInput: LoginInput!): AuthPayload!
   post(postInput: CreatePostInput!): Post!
-  like(postId: ID!): DeletedNode!
+  toggleLike(postId: ID!): Like!
 }
 
 interface IUser {
@@ -80,6 +76,6 @@ type Post {
 
 type Like {
   id: ID!
-  user: SafeUser!
-  post: Post!
+  user: SafeUser
+  post: Post
 }
