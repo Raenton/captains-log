@@ -1,7 +1,7 @@
 module.exports = {
-  Query: require('./Query'),
-  Mutation: require('./Mutation'),
-  User: require('./User'),
-  Post: require('./Post'),
-  Like: require('./Like')
+  Query: require('./queries'),
+  Mutation: require('./mutations'),
+  User: require('./types/User'),
+  Post: require('./types/Post'),
+  Like: require('./types/Like')
 }
