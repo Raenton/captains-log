@@ -58,11 +58,36 @@ exports.updatePost = async (_parent, args, context) => {
   if (userId !== postUser.id) {
     throw new Error('You can not edit another users post')
   }
-  
+
   return prisma.updatePost({
     data: { title, body, description },
     where: postWhere
   })
+}
+
+exports.deletePost = async (_parent, args, context) => {
+  const { auth, prisma } = context
+  const userId = auth.authenticate(context)
+  const postWhere = { id } = args
+
+  const postExists = await prisma.$exists.post(postWhere)
+
+  if (!postExists) {
+    throw new Error('Post does not exist')
+  }
+
+  const postUser = await prisma.post(postWhere).user()
+  if (userId !== postUser.id) {
+    throw new Error('You can not delete another users post')
+  }
+
+  // delete likes from the post 
+  await prisma.deleteManyLikes({
+    post: postWhere
+  })
+
+  // delete the post itself
+  return prisma.deletePost(postWhere)
 }
 
 exports.toggleLike = async (_parent, args, context) => {

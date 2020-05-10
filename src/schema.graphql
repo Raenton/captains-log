@@ -16,6 +16,7 @@ type Mutation {
   login(loginInput: LoginInput!): AuthPayload!
   post(postInput: CreatePostInput!): Post!
   updatePost(postInput: UpdatePostInput!): Post!
+  deletePost(id: ID!): Post!
   toggleLike(postId: ID!): Like!
 }
 
