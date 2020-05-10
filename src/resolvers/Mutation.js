@@ -43,6 +43,28 @@ exports.post = async (_parent, args, context) => {
   return post
 }
 
+exports.updatePost = async (_parent, args, context) => {
+  const { auth, prisma } = context
+  const { id, title, body, description } = args.postInput
+  const userId = auth.authenticate(context)
+  const postWhere = { id }
+  const postExists = await prisma.$exists.post(postWhere)
+
+  if (!postExists) {
+    throw new Error('Post does not exist')
+  }
+
+  const postUser = await prisma.post(postWhere).user()
+  if (userId !== postUser.id) {
+    throw new Error('You can not edit another users post')
+  }
+  
+  return prisma.updatePost({
+    data: { title, body, description },
+    where: postWhere
+  })
+}
+
 exports.toggleLike = async (_parent, args, context) => {
   const { auth, prisma } = context
   const { postId } = args
