@@ -3,7 +3,13 @@ exports.users = (_parent, _args, context) => {
 }
 
 exports.user = async (_parent, args, context) => {
-  return context.prisma.user({ id: args.id })
+  const { prisma } = context
+  const where = { id: args.id }
+  const user = await prisma.user(where)
+  if (!user) {
+    throw new Error('User does not exist')
+  }
+  return user
 }
 
 exports.posts = (_parent, _args, context) => {
