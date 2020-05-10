@@ -3,16 +3,7 @@ exports.users = (_parent, _args, context) => {
 }
 
 exports.user = async (_parent, args, context) => {
-  const { auth, prisma } = context
-  const { id, username, email } = await prisma.user({ id: args.id })
-  const isCurrentUser = auth.isCurrentUser(context, args.id)
-  return {
-    id,
-    username,
-    email: isCurrentUser
-      ? email
-      : null
-  }
+  return context.prisma.user({ id: args.id })
 }
 
 exports.posts = (_parent, _args, context) => {

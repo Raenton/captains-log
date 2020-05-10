@@ -1,9 +1,9 @@
 scalar DateTime
 
 type Query {
-  user(id: ID!): IUser!
+  user(id: ID!): User!
   # should be a search / filter
-  users: [SafeUser!]!
+  users: [User!]!
   post(id: ID!): Post!
   # should be a search / filter
   # also merged with searching for users
@@ -18,26 +18,10 @@ type Mutation {
   toggleLike(postId: ID!): Like!
 }
 
-interface IUser {
+type User {
   id: ID!
-  username: String!
-  posts: [Post!]!
-  likes: [Like!]!
-}
-
-type User implements IUser {
-  id: ID!
-  username: String!
-  email: String!
-  posts: [Post!]!
-  likes: [Like!]!
-}
-
-# see about removing the mass duplication between this and standard user
-# cut out email address for privacy
-type SafeUser implements IUser {
-  id: ID!
-  username: String!
+  username: String
+  email: String
   posts: [Post!]!
   likes: [Like!]!
 }
@@ -70,12 +54,12 @@ type Post {
   description: String
   body: String
   createdAt: DateTime!
-  user: SafeUser!
+  user: User!
   likes: [Like!]!
 }
 
 type Like {
   id: ID!
-  user: SafeUser
+  user: User
   post: Post
 }
