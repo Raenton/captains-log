@@ -1,1 +1,0 @@
-exports.__resolveType = () => null
