@@ -1,5 +1,11 @@
-exports.users = (_parent, _args, context) => {
-  return context.prisma.users()
+exports.users = async (_parent, args, context) => {
+  const usersConnection = await context.prisma.usersConnection({
+    ...args.paginationInput
+  })
+  return {
+    count: usersConnection.edges.length,
+    ...usersConnection
+  }
 }
 
 exports.user = (_parent, args, context) => {

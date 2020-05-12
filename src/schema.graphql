@@ -8,11 +8,10 @@ interface Node {
 
 type Query {
   user(id: ID!): User!
-  users: [User!]!
+  users(paginationInput: PaginationInput): UsersConnection!
   posts(paginationInput: PaginationInput): PostsConnection!
 }
 
-# investigate how to semantically separate queries and mutations
 type Mutation {
   registerUser(registerInput: RegisterUserInput!): AuthPayload!
   login(loginInput: LoginInput!): AuthPayload!
@@ -90,9 +89,19 @@ type PostEdge {
   node: Post!
 }
 
+type UserEdge {
+  node: User!
+}
+
 type PostsConnection {
   count: Int!
   edges: [PostEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UsersConnection {
+  count: Int!
+  edges: [UserEdge!]!
   pageInfo: PageInfo!
 }
 
