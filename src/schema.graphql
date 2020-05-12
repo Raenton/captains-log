@@ -62,12 +62,16 @@ input UpdatePostInput {
 }
 
 input PaginationInput {
-  first: Int!
+  first: Int
+  last: Int
+  before: String
   after: String
 }
 
 type PageInfo {
+  startCursor: String!
   endCursor: String!
+  hasPreviousPage: Boolean!
   hasNextPage: Boolean!
 }
 
