@@ -1,5 +1,12 @@
-exports.posts = (parent, _args, context) => {
-  return context.prisma.user({ id: parent.id }).posts()
+exports.posts = async (parent, args, context) => {
+  const postsConnection = await context.prisma.postsConnection({
+    where: { user: { id: parent.id }},
+    ...args.paginationInput
+  })
+  return {
+    count: postsConnection.edges.length,
+    ...postsConnection
+  }
 }
 
 exports.likes = (parent, _args, context) => {

@@ -7,7 +7,7 @@ interface Node {
 }
 
 type Query {
-  node(id: ID!): Node
+  user(id: ID!): User!
   users: [User!]!
   posts(paginationInput: PaginationInput): PostsConnection!
 }
@@ -28,7 +28,7 @@ type User implements Node {
   updatedAt: DateTime
   username: String
   email: String
-  posts: [Post!]!
+  posts(paginationInput: PaginationInput): PostsConnection!
   likes: [Like!]!
 }
 
