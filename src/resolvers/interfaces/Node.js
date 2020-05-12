@@ -1,0 +1,1 @@
+exports.__resolveType = () => null

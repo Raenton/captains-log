@@ -31,11 +31,3 @@ exports.posts = async (_parent, args, context) => {
     }
   }
 }
-
-exports.post = async (_parent, args, context) => {
-  const post = await context.prisma.post({ id: args.id })
-  if (!post) {
-    throw new Error('Post does not exist')
-  }
-  return post
-}

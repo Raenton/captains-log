@@ -1,5 +1,7 @@
 type User {
   id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
   username: String! @unique
   email: String! @unique
   passwordHash: String!
@@ -9,16 +11,19 @@ type User {
 
 type Post {
   id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
   title: String!
   description: String!
   body: String!
-  createdAt: DateTime! @createdAt
   user: User!
   likes: [Like!]!
 }
 
 type Like {
   id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
   user: User!
   post: Post!
 }

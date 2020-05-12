@@ -1,12 +1,14 @@
 scalar DateTime
 
+interface Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
 type Query {
-  user(id: ID!): User!
-  # should be a search / filter
+  node(id: ID!): Node
   users: [User!]!
-  post(id: ID!): Post!
-  # should be a search / filter
-  # also merged with searching for users
   posts(paginationInput: PaginationInput): PostsConnection!
 }
 
@@ -20,8 +22,10 @@ type Mutation {
   toggleLike(postId: ID!): Like!
 }
 
-type User {
+type User implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
   username: String
   email: String
   posts: [Post!]!
@@ -67,12 +71,13 @@ type PageInfo {
   hasNextPage: Boolean!
 }
 
-type Post {
+type Post implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
   title: String!
   description: String
   body: String
-  createdAt: DateTime!
   user: User!
   likes: [Like!]!
 }
@@ -87,8 +92,10 @@ type PostsConnection {
   pageInfo: PageInfo!
 }
 
-type Like {
+type Like implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
   user: User
   post: Post
 }
