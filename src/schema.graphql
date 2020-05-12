@@ -32,6 +32,45 @@ type User implements Node {
   likes: [Like!]!
 }
 
+type Post implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  title: String!
+  description: String
+  body: String
+  user: User!
+  likes: [Like!]!
+}
+
+type Like implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  user: User
+  post: Post
+}
+
+type PostEdge {
+  node: Post!
+}
+
+type UserEdge {
+  node: User!
+}
+
+type PostsConnection {
+  count: Int!
+  edges: [PostEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UsersConnection {
+  count: Int!
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+}
+
 type AuthPayload {
   token: String!
   user: User!
@@ -73,43 +112,4 @@ type PageInfo {
   endCursor: String!
   hasPreviousPage: Boolean!
   hasNextPage: Boolean!
-}
-
-type Post implements Node {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime
-  title: String!
-  description: String
-  body: String
-  user: User!
-  likes: [Like!]!
-}
-
-type PostEdge {
-  node: Post!
-}
-
-type UserEdge {
-  node: User!
-}
-
-type PostsConnection {
-  count: Int!
-  edges: [PostEdge!]!
-  pageInfo: PageInfo!
-}
-
-type UsersConnection {
-  count: Int!
-  edges: [UserEdge!]!
-  pageInfo: PageInfo!
-}
-
-type Like implements Node {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime
-  user: User
-  post: Post
 }
