@@ -7,7 +7,7 @@ type Query {
   post(id: ID!): Post!
   # should be a search / filter
   # also merged with searching for users
-  posts: [Post!]!
+  posts(paginationInput: PaginationInput): PostsConnection!
 }
 
 # investigate how to semantically separate queries and mutations
@@ -57,6 +57,16 @@ input UpdatePostInput {
   body: String
 }
 
+input PaginationInput {
+  first: Int!
+  after: String
+}
+
+type PageInfo {
+  endCursor: String!
+  hasNextPage: Boolean!
+}
+
 type Post {
   id: ID!
   title: String!
@@ -65,6 +75,16 @@ type Post {
   createdAt: DateTime!
   user: User!
   likes: [Like!]!
+}
+
+type PostEdge {
+  node: Post!
+}
+
+type PostsConnection {
+  count: Int!
+  edges: [PostEdge!]!
+  pageInfo: PageInfo!
 }
 
 type Like {
