@@ -7,3 +7,7 @@ exports.posts = async (_parent, args, context) => {
     ...postsConnection
   }
 }
+
+exports.post = (_parent, args, context) => {
+  return context.prisma.post({ id: args.id })
+}

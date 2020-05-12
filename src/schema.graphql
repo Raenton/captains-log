@@ -8,6 +8,7 @@ interface Node {
 
 type Query {
   user(id: ID!): User!
+  post(id: ID!): Post!
   users(paginationInput: PaginationInput): UsersConnection!
   posts(paginationInput: PaginationInput): PostsConnection!
 }
