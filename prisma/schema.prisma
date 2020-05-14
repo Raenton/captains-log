@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Comment {
+  id            Int             @default(autoincrement()) @id
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  body          String?
+  authorId      Int
+  postId        Int
+  likes         CommentLike[]
+  user          User            @relation(fields: [authorId], references: [id])
+  post          Post            @relation(fields: [postId], references: [id])
+
+  @@index([authorId], name: "authorId")
+  @@index([postId], name: "postId")
+  @@map(name: "comments")
+}
+
+model CommentLike {
+  id        Int      @default(autoincrement()) @id
+  authorId  Int
+  commentId Int
+  user      User     @relation(fields: [authorId], references: [id])
+  comment   Comment  @relation(fields: [commentId], references: [id])
+
+  @@index([authorId], name: "authorId")
+  @@index([commentId], name: "commentId")
+  @@map(name: "comment_likes")
+}
+
+model Post {
+  id          Int          @default(autoincrement()) @id
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  title       String
+  body        String?
+  description String?
+  published   Boolean      @default(false)
+  authorId    Int
+  comments    Comment[]
+  likes       PostLike[]
+  user        User         @relation(fields: [authorId], references: [id])
+
+  @@index([authorId], name: "authorId")
+  @@map(name: "posts")
+}
+
+model PostLike {
+  id       Int   @default(autoincrement()) @id
+  authorId Int
+  postId   Int
+  user     User @relation(fields: [authorId], references: [id])
+  post     Post @relation(fields: [postId], references: [id])
+
+  @@index([authorId], name: "authorId")
+  @@index([postId], name: "postId")
+  @@map(name: "post_likes")
+}
+
+model User {
+  id            Int             @default(autoincrement()) @id
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  username      String          @unique
+  email         String          @unique
+  passwordHash  String
+  comments      Comment[]
+  commentLikes CommentLike[]
+  posts         Post[]
+  postLikes    PostLike[]
+
+  @@map(name: "users")
+}

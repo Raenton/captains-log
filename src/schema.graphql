@@ -110,6 +110,6 @@ input PaginationInput {
 type PageInfo {
   startCursor: String!
   endCursor: String!
-  hasPreviousPage: Boolean!
+  hasPrevPage: Boolean!
   hasNextPage: Boolean!
 }

@@ -9,28 +9,25 @@ Built with GraphQL and Prisma v1.0, (the smooth, configurable interfaces and SDL
 
 ## Prerequisites
 
-You will need to have yarn and Docker installed.
+You will need to have Docker, yarn, and NodeJS installed on your system.
 
 ## How to use
 
-Install dependencies
-```
-yarn install
-```
+From root directory, run the following:
 
-Run the Prisma Server and connected MySQL Database
 ```
-cd prisma
-docker-compose up -d
-prisma deploy
+yarn install          # install dependencies
+docker-compose up     # deploy MySQL database with seed schema
+prisma generate       # generate the prisma-client
+yarn dev              # run the development server with nodemon
 ```
+You can now navigate to `http://localhost:3000` to use the GraphQL Playground (supplied by `graphql-yoga`).
 
-Run the server (from root)
-```
-yarn start
-```
 
-Run the server in development mode
+If you wish to rebuild the Prisma Schema, run:
 ```
-yarn dev
+prisma introspect
+prisma generate
 ```
+This will result in prisma generating a `/prisma/schema.prisma` from the MySQL tables.
+A fresh prisma client (used in the application JS) will then be built.

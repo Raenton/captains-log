@@ -1,8 +1,10 @@
 const { GraphQLServer } = require('graphql-yoga')
-const { prisma } = require('./generated/prisma-client')
+const { PrismaClient } = require('@prisma/client')
 const resolvers = require('./resolvers')
 const auth = require('./utils/auth')
 const utils = require('./utils/utils')
+
+const prisma = new PrismaClient()
 
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',

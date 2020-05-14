@@ -1,13 +1,13 @@
 exports.posts = async (_parent, args, context) => {
-  const postsConnection = await context.prisma.postsConnection({
-    ...args.paginationInput
-  })
-  return {
-    count: postsConnection.edges.length,
-    ...postsConnection
-  }
+  return await context.utils.paginate(args.paginationInput, context, 'post')
 }
 
-exports.post = (_parent, args, context) => {
-  return context.prisma.post({ id: args.id })
+exports.post = async (_parent, args, context) => {
+  const post = await context.prisma.post.findOne({
+    where: { id: parseInt(args.id) }
+  })
+  if (!post) {
+    throw new Error('Post does not exist')
+  }
+  return post
 }

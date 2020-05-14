@@ -3,11 +3,13 @@ exports.post = async (_parent, args, context) => {
   const { title, body, description } = args.postInput
 
   const userId = auth.authenticate(context)
-  const post = await prisma.createPost({
-    title,
-    body,
-    description,
-    user: { connect: { id: userId }}
+  const post = await prisma.post.create({
+    data: {
+      title,
+      body,
+      description,
+      user: { connect: { id: userId }}
+    }
   })
   return post
 }
@@ -16,43 +18,40 @@ exports.updatePost = async (_parent, args, context) => {
   const { auth, prisma } = context
   const { id, title, body, description } = args.postInput
   const userId = auth.authenticate(context)
-  const postWhere = { id }
-  const postExists = await prisma.$exists.post(postWhere)
+  const postWhere = { id: parseInt(id) }
+  
+  const post = await prisma.post.findOne({ where: postWhere })
 
-  if (!postExists) {
+  if (!post) {
     throw new Error('Post does not exist')
   }
 
-  const postUser = await prisma.post(postWhere).user()
+  const postUser = await prisma.post.findOne({ where: postWhere }).user()
   if (userId !== postUser.id) {
     throw new Error('You can not edit another users post')
   }
 
-  return prisma.updatePost({
-    data: { title, body, description },
+  return prisma.post.update({
+    data: { title, body, description, updatedAt: new Date() },
     where: postWhere
   })
 }
 
 exports.deletePost = async (_parent, args, context) => {
   const { auth, prisma } = context
+  const postWhere = { id: parseInt(args.id) }
   const userId = auth.authenticate(context)
-  const postWhere = { id } = args
 
-  const postExists = await prisma.$exists.post(postWhere)
+  const post = await prisma.post.findOne({ where: postWhere })
 
-  if (!postExists) {
+  if (!post) {
     throw new Error('Post does not exist')
   }
 
-  const postUser = await prisma.post(postWhere).user()
+  const postUser = await prisma.post.findOne({ where: postWhere }).user()
   if (userId !== postUser.id) {
     throw new Error('You can not delete another users post')
   }
 
-  await prisma.deleteManyLikes({
-    post: postWhere
-  })
-
-  return prisma.deletePost(postWhere)
+  return prisma.post.delete({ where: postWhere })
 }

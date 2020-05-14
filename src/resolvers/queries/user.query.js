@@ -1,13 +1,13 @@
 exports.users = async (_parent, args, context) => {
-  const usersConnection = await context.prisma.usersConnection({
-    ...args.paginationInput
-  })
-  return {
-    count: usersConnection.edges.length,
-    ...usersConnection
-  }
+  return await context.utils.paginate(args.paginationInput, context, 'user')
 }
 
-exports.user = (_parent, args, context) => {
-  return context.prisma.user({ id: args.id })
+exports.user = async (_parent, args, context) => {
+  const user = await context.prisma.user.findOne({
+    where: { id: parseInt(args.id) }
+  })
+  if (!user) {
+    throw new Error('User does not exist')
+  }
+  return user
 }
