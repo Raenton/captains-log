@@ -5,11 +5,16 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon --inspect=12345 src/index.js"
+    "dev": "nodemon --inspect=12345 src/index.js",
+    "test": "mocha --recursive",
+    "test:watch": "mocha --recursive --watch"
   },
   "devDependencies": {
     "@prisma/cli": "^2.0.0-beta.5",
-    "nodemon": "^2.0.3"
+    "chai": "^4.2.0",
+    "mocha": "^7.1.2",
+    "nodemon": "^2.0.3",
+    "sinon": "^9.0.2"
   },
   "dependencies": {
     "@prisma/client": "^2.0.0-beta.5",
