@@ -72,9 +72,4 @@ CREATE TABLE test.posts LIKE development.posts;
 CREATE TABLE test.comments LIKE development.comments;
 CREATE TABLE test.comment_likes LIKE development.comment_likes;
 CREATE TABLE test.post_likes LIKE development.post_likes;
-INSERT test.users SELECT * FROM development.users;
-INSERT test.posts SELECT * FROM development.posts;
-INSERT test.comments SELECT * FROM development.comments;
-INSERT test.comment_likes SELECT * FROM development.comment_likes;
-INSERT test.post_likes SELECT * FROM development.post_likes;
 
