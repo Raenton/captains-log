@@ -1,12 +1,9 @@
 DROP DATABASE IF EXISTS development;
 CREATE DATABASE development;
-USE development;
+DROP DATABASE IF EXISTS test;
+CREATE DATABASE test;
 
-DROP TABLE IF EXISTS posts;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS comment_likes;
-DROP TABLE IF EXISTS post_likes;
+USE development;
 
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL,
@@ -38,7 +35,7 @@ CREATE TABLE comments (
   updatedAt TIMESTAMP NOT NULL DEFAULT now(),
   authorId INTEGER NOT NULL,
     FOREIGN KEY (authorId)
-    REFERENCES user(id)
+    REFERENCES users(id)
     ON DELETE CASCADE,
   postId INTEGER NOT NULL,
     FOREIGN KEY (postId)
@@ -69,3 +66,15 @@ CREATE TABLE post_likes (
     REFERENCES posts(id)
     ON DELETE CASCADE
 );
+
+CREATE TABLE test.users LIKE development.users;
+CREATE TABLE test.posts LIKE development.posts;
+CREATE TABLE test.comments LIKE development.comments;
+CREATE TABLE test.comment_likes LIKE development.comment_likes;
+CREATE TABLE test.post_likes LIKE development.post_likes;
+INSERT test.users SELECT * FROM development.users;
+INSERT test.posts SELECT * FROM development.posts;
+INSERT test.comments SELECT * FROM development.comments;
+INSERT test.comment_likes SELECT * FROM development.comment_likes;
+INSERT test.post_likes SELECT * FROM development.post_likes;
+
