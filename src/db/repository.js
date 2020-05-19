@@ -18,9 +18,8 @@ class DbRepository {
   
     count:(client, model, args) => client[model].count(args),
 
-    exists: async (client, model, args) => {
-      return Boolean(await client[model].findOne(args))
-    }
+    exists: async (client, model, args) => 
+      Boolean(this._wrapperFuncs.findOne(client, model, args))
   }
 
   /**

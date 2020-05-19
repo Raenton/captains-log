@@ -131,43 +131,38 @@ describe('[DB] Repository', () => {
     sinon.assert.calledOnceWithExactly(client.model.count, args)
   })
 
-  it('`model.exists` calls client.model.findOne with arguments', () => {
+  it('`model.exists` returns true if _wrapperFuncs.findOne returns truthy', async () => {
     const client = createClient()
     const repository = createRepository(client)
-
-    const args = { arg: 'arg' }
-    repository.model.exists(args)
-    
-    sinon.assert.calledOnceWithExactly(client.model.findOne, args)
-  })
-
-  it('`model.exists` returns true if client.model.findOne returns truthy', async () => {
-    const client = createClient()
-    const modifiedClient = { 
-      ...client,
-      model: { findOne: sinon.stub().returns({}) }
-    }
-    const repository = createRepository(modifiedClient)
+    repository._wrapperFuncs.findOne = sinon.stub().returns(true)
 
     const args = { arg: 'arg' }
     const result = await repository.model.exists(args)
 
     expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(modifiedClient.model.findOne, args)
+    sinon.assert.calledOnceWithExactly(
+      repository._wrapperFuncs.findOne,
+      client,
+      'model',
+      args
+    )
   })
 
-  it('`model.exists` returns false if client.model.findOne returns falsy', async () => {
+  it('`model.exists` returns false if _wrapperFuncs.findOne returns falsy', async () => {
     const client = createClient()
-    const modifiedClient = { 
-      ...client,
-      model: { findOne: sinon.stub().returns(null) }
-    }
-    const repository = createRepository(modifiedClient)
+    const repository = createRepository(client)
+    repository._wrapperFuncs.findOne = sinon.stub().returns(false)
 
     const args = { arg: 'arg' }
     const result = await repository.model.exists(args)
 
     expect(result).to.be.false
-    sinon.assert.calledOnceWithExactly(modifiedClient.model.findOne, args)
+    sinon.assert.calledOnceWithExactly(
+      repository._wrapperFuncs.findOne,
+      client,
+      'model',
+      args
+    )
   })
+  
 })
