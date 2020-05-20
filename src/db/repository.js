@@ -19,7 +19,82 @@ class DbRepository {
     count:(client, model, args) => client[model].count(args),
 
     exists: async (client, model, args) => 
-      Boolean(this._wrapperFuncs.findOne(client, model, args))
+      Boolean(this._wrapperFuncs.findOne(client, model, args)),
+
+    paginate: async (client, model, args, context) => {
+      const { utils } = context
+      const { select, where, first, last, before, after } = args
+    
+      const query = {
+        select,
+        where,
+        first,
+        last,
+        orderBy: {
+          createdAt: 'desc'
+        }
+      }
+      
+      if (after) {
+        query.where['createdAt'] = { lt: new Date(utils.fromCursorHash(after)) }
+      } else if (before) {
+        query.where['createdAt'] = { gt: new Date(utils.fromCursorHash(before)) }
+      }
+    
+      const result = await this._wrapperFuncs.findMany(client, model, query)
+    
+      if (!result.length) {
+        /**
+         * this will occur in two (2) scenarios
+         *  a) client error, pageInfo was not respected when making request
+         *  b) there are no posts matching query
+         */
+        return {
+          count: 0,
+          edges: [],
+          pageInfo: {
+            hasPrevPage: false,
+            hasNextPage: false,
+            startCursor: '',
+            endCursor: ''
+          }
+        }
+      }
+    
+      const hasPrevPage = Boolean(
+        await this._wrapperFuncs.count(client, model, {
+          first: 1,
+          where: {
+            createdAt: { gt: result[0].createdAt }
+          }
+        })
+      )
+    
+      const hasNextPage = Boolean(
+        await this._wrapperFuncs.count(client, model, {
+          first: 1,
+          where: {
+            createdAt: { lt: result[result.length - 1].createdAt }
+          }
+        })
+      )
+    
+      const edges = result.map(node => ({
+        cursor: utils.toCursorHash(node.createdAt),
+        node
+      }))
+    
+      return {
+        count: edges.length,
+        edges: edges,
+        pageInfo: {
+          hasPrevPage,
+          hasNextPage,
+          startCursor: edges[0].cursor,
+          endCursor: edges[edges.length - 1].cursor
+        }
+      }
+    }
   }
 
   /**
@@ -32,11 +107,11 @@ class DbRepository {
    * @param {object} client // the client to wrap
    * @param {[object]} wrapModels  // models that should be accessible on the client
    */
-  constructor(client, models) {
-    this._generateWrappers(client, models)
+  constructor(client, models, context) {
+    this._generateWrappers(client, models, context)
   }
 
-  _generateWrappers(client, models) {
+  _generateWrappers(client, models, context) {
     models.forEach(model => {
       if (!client[model]) {
         throw new TypeError([
@@ -47,7 +122,7 @@ class DbRepository {
       this[model] = {}
       Object.keys(this._wrapperFuncs).forEach(key => {
         const func = this._wrapperFuncs[key]
-        this[model][func.name] = (args) => func(client, model, args)
+        this[model][func.name] = (args) => func(client, model, args, context)
       })
     })
   }
