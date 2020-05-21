@@ -1,9 +1,9 @@
 exports.users = async (_parent, args, context) => {
-  return await context.utils.paginate(args.paginationInput, context, 'user')
+  return await context.repository.user.paginate(args.paginationInput)
 }
 
 exports.user = async (_parent, args, context) => {
-  const user = await context.prisma.user.findOne({
+  const user = await context.repository.user.findOne({
     where: { id: parseInt(args.id) }
   })
   if (!user) {
