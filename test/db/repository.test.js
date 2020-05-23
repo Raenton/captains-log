@@ -20,180 +20,126 @@ const fakeItems = [
   }
 ]
 
-const truthyStub = () => {
-  return sinon.stub().returns(true)
+const args = {
+  arg: 'arg'
 }
-
-// this is the shape that a client takes.
-// in the case of prisma, it will have the following call patterns:
-// prisma.post.findOne()
-// prisma.post.findOne().user()
-// prisma.comment.findMany()
-// and so on...
-const createClient = () => {
-  const clientMethods = {
-    findOne: truthyStub(),
-    findMany: truthyStub(),
-    create: truthyStub(),
-    update: truthyStub(),
-    updateMany: truthyStub(),
-    delete: truthyStub(),
-    deleteMany: truthyStub(),
-    upsert: truthyStub(),
-    count: truthyStub()
-  }
-
-  return {
-    'model': { ...clientMethods },
-    'model2': { ...clientMethods }
-  }
-}
-
-const createRepository = (client, models = ['model'], context = {}) =>
-  new DbRepository(client, models, context)
 
 describe('[DB] Repository', () => {
-  it('Constructs a repository with wrapped models', () => {
-    const client = createClient()
-    const models = ['model', 'model2']
-    const repository = createRepository(client, models)
-    expect(repository.model).to.exist
-    expect(repository.model2).to.exist
+  it('Constructs a repository with model and utils', () => {
+    const model = { findOne: () => {} }
+    const utils = { doSomething: () => {} }
+    const repository = new DbRepository(model, utils)
 
-    // wrapper methods that should be applied to the models
-    // (separate from clientMethods above; these are what call them)
-    const expectedMethods = [
-      'findOne',
-      'findMany',
-      'create',
-      'update',
-      'updateMany',
-      'deleteOne',
-      'deleteMany',
-      'upsert',
-      'count',
-      'exists',
-      'paginate'
-    ]
-    expectedMethods.forEach(m => {
-      expect(repository.model[m]).to.exist
-      expect(repository.model2[m]).to.exist
-      expect(typeof repository.model[m]).to.equal('function')
-      expect(typeof repository.model2[m]).to.equal('function')
-    })
+    expect(repository.model).to.deep.equal(model)
+    expect(repository.utils).to.deep.equal(utils)
   })
 
-  it('`model.findOne` calls client model interface with arguments', () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    const args = { arg: 'arg' }
-    const result = repository.model.findOne(args)
-    expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(client.model.findOne, args)
-  })
+  it('`DbRepository.findOne` returns call to model.findOne with args', () => {
+    const model = { findOne: sinon.stub().returns(true) }
+    const repository = new DbRepository(model)
 
-  it('`model.create` calls client model interface with arguments', () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    const args = { arg: 'arg' }
-    const result = repository.model.create(args)
-    expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(client.model.create, args)
-  })
-
-  it('`model.update` calls client model interface with arguments', () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    const args = { arg: 'arg' }
-    const result = repository.model.update(args)
-    expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(client.model.update, args)
-  })
-
-  it('`model.updateMany` calls client model interface with arguments', () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    const args = { arg: 'arg' }
-    const result = repository.model.updateMany(args)
-    expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(client.model.updateMany, args)
-  })
-
-  it('`model.deleteOne` calls client model interface with arguments', () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    const args = { arg: 'arg' }
-    const result = repository.model.deleteOne(args)
-    expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(client.model.delete, args)
-  })
-
-  it('`model.deleteMany` calls client model interface with arguments', () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    const args = { arg: 'arg' }
-    const result = repository.model.deleteMany(args)
-    expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(client.model.deleteMany, args)
-  })
-
-  it('`model.upsert` calls client model interface with arguments', () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    const args = { arg: 'arg' }
-    const result = repository.model.upsert(args)
-    expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(client.model.upsert, args)
-  })
-
-  it('`model.count` calls client model interface with arguments', () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    const args = { arg: 'arg' }
-    const result = repository.model.count(args)
-    expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(client.model.count, args)
-  })
-
-  it('`model.exists` returns true if _wrapperFuncs.findOne returns truthy', async () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    repository._wrapperFuncs.findOne = sinon.stub().returns(true)
-
-    const args = { arg: 'arg' }
-    const result = await repository.model.exists(args)
+    const result = repository.findOne(args)
 
     expect(result).to.be.true
-    sinon.assert.calledOnceWithExactly(
-      repository._wrapperFuncs.findOne,
-      client,
-      'model',
-      args
-    )
+    sinon.assert.calledOnceWithExactly(model.findOne, args)
   })
 
-  it('`model.exists` returns false if _wrapperFuncs.findOne returns falsy', async () => {
-    const client = createClient()
-    const repository = createRepository(client)
-    repository._wrapperFuncs.findOne = sinon.stub().returns(false)
+  it('`DbRepository.create` returns call to model.create with args', () => {
+    const model = { create: sinon.stub().returns(true) }
+    const repository = new DbRepository(model)
 
-    const args = { arg: 'arg' }
-    const result = await repository.model.exists(args)
+    const result = repository.create(args)
+
+    expect(result).to.be.true
+    sinon.assert.calledOnceWithExactly(model.create, args)
+  })
+
+  it('`DbRepository.update` returns call to model.update with args', () => {
+    const model = { update: sinon.stub().returns(true) }
+    const repository = new DbRepository(model)
+
+    const result = repository.update(args)
+
+    expect(result).to.be.true
+    sinon.assert.calledOnceWithExactly(model.update, args)
+  })
+
+  it('`DbRepository.updateMany` returns call to model.updateMany with args', () => {
+    const model = { updateMany: sinon.stub().returns(true) }
+    const repository = new DbRepository(model)
+
+    const result = repository.updateMany(args)
+
+    expect(result).to.be.true
+    sinon.assert.calledOnceWithExactly(model.updateMany, args)
+  })
+
+  it('`DbRepository.deleteOne` returns call to model.delete with args', () => {
+    const model = { delete: sinon.stub().returns(true) }
+    const repository = new DbRepository(model)
+
+    const result = repository.deleteOne(args)
+
+    expect(result).to.be.true
+    sinon.assert.calledOnceWithExactly(model.delete, args)
+  })
+
+  it('`DbRepository.deleteMany` returns call to model.deleteMany with args', () => {
+    const model = { deleteMany: sinon.stub().returns(true) }
+    const repository = new DbRepository(model)
+
+    const result = repository.deleteMany(args)
+
+    expect(result).to.be.true
+    sinon.assert.calledOnceWithExactly(model.deleteMany, args)
+  })
+
+  it('`DbRepository.upsert` returns call to model.upsert with args', () => {
+    const model = { upsert: sinon.stub().returns(true) }
+    const repository = new DbRepository(model)
+
+    const result = repository.upsert(args)
+
+    expect(result).to.be.true
+    sinon.assert.calledOnceWithExactly(model.upsert, args)
+  })
+
+  it('`DbRepository.count` returns call to model.count with args', () => {
+    const model = { count: sinon.stub().returns(true) }
+    const repository = new DbRepository(model)
+
+    const result = repository.count(args)
+
+    expect(result).to.be.true
+    sinon.assert.calledOnceWithExactly(model.count, args)
+  })
+
+  it('`DbRepository.exists` returns true if this.findOne returns truthy', async () => {
+    const model = {}
+    const repository = new DbRepository(model)
+    repository.findOne = sinon.stub().returns({})
+
+    const result = await repository.exists(args)
+
+    expect(result).to.be.true
+    sinon.assert.calledOnceWithExactly(repository.findOne, args)
+  })
+
+  it('`DbRepository.exists` returns false if this.findOne returns falsy', async () => {
+    const model = {}
+    const repository = new DbRepository(model)
+    repository.findOne = sinon.stub().returns(null)
+
+    const result = await repository.exists(args)
 
     expect(result).to.be.false
-    sinon.assert.calledOnceWithExactly(
-      repository._wrapperFuncs.findOne,
-      client,
-      'model',
-      args
-    )
+    sinon.assert.calledOnceWithExactly(repository.findOne, args)
   })
 
-  it('`model.paginate` makes a query with args without cursor', async () => {
-    const client = createClient()
-    const context = { utils: {} }
-    const repository = createRepository(client, ['model'], context)
-    repository._wrapperFuncs.findMany = sinon.stub().returns([])
+  it('`DbRepository.paginate` makes a query with args without cursor', async () => {
+    const model = {}
+    const repository = new DbRepository(model)
+    repository.findMany = sinon.stub().returns([])
 
     const args = {
       select: {
@@ -214,25 +160,17 @@ describe('[DB] Repository', () => {
       last: undefined
     }
 
-    await repository.model.paginate(args)
+    await repository.paginate(args)
 
-    sinon.assert.calledOnceWithExactly(
-      repository._wrapperFuncs.findMany,
-      client,
-      'model',
-      expArgs
-    )
+    sinon.assert.calledOnceWithExactly(repository.findMany, expArgs)
   })
   
-  it('`model.paginate` makes a query with args with `after` cursor', async () => {
-    const client = createClient()
-    const context = {
-      utils: {
-        fromCursorHash: sinon.stub().callsFake(args => args)
-      }
+  it('`DbRepository.paginate` makes a query with args with `after` cursor', async () => {
+    const utils = {
+      fromCursorHash: sinon.stub().callsFake(args => args)
     }
-    const repository = createRepository(client, ['model'], context)
-    repository._wrapperFuncs.findMany = sinon.stub().returns([])
+    const repository = new DbRepository({}, utils)
+    repository.findMany = sinon.stub().returns([])
 
     const args = {
       select: {
@@ -259,25 +197,18 @@ describe('[DB] Repository', () => {
       last: undefined
     }
 
-    await repository.model.paginate(args)
+    await repository.paginate(args)
 
-    sinon.assert.calledOnceWithExactly(context.utils.fromCursorHash, args.after)
-    sinon.assert.calledOnceWithExactly(repository._wrapperFuncs.findMany,
-      client,
-      'model',
-      expArgs
-    )
+    sinon.assert.calledOnceWithExactly(utils.fromCursorHash, args.after)
+    sinon.assert.calledOnceWithExactly(repository.findMany, expArgs)
   })
   
-  it('`model.paginate` makes a query with args with `before` cursor', async () => {
-    const client = createClient()
-    const context = {
-      utils: {
+  it('`DbRepository.paginate` makes a query with args with `before` cursor', async () => {
+    const utils = {
         fromCursorHash: sinon.stub().callsFake(args => args)
       }
-    }
-    const repository = createRepository(client, ['model'], context)
-    repository._wrapperFuncs.findMany = sinon.stub().returns([])
+    const repository = new DbRepository({}, utils)
+    repository.findMany = sinon.stub().returns([])
 
     const args = {
       select: {
@@ -304,26 +235,21 @@ describe('[DB] Repository', () => {
       first: undefined
     }
 
-    await repository.model.paginate(args)
+    await repository.paginate(args)
 
-    sinon.assert.calledOnceWithExactly(context.utils.fromCursorHash, args.before)
-    sinon.assert.calledOnceWithExactly(repository._wrapperFuncs.findMany,
-      client,
-      'model',
-      expArgs
-    )
+    sinon.assert.calledOnceWithExactly(utils.fromCursorHash, args.before)
+    sinon.assert.calledOnceWithExactly(repository.findMany, expArgs)
   })
   
-  it('`model.paginate` returns an empty page object if no results are found', async () => {
-    const client = createClient()
-    const repository = createRepository(client, ['model'])
-    repository._wrapperFuncs.findMany = sinon.stub().returns([])
+  it('`DbRepository.paginate` returns an empty page object if no results are found', async () => {
+    const repository = new DbRepository({}, {})
+    repository.findMany = sinon.stub().returns([])
 
     const args = {
       first: 1
     }
 
-    const result = await repository.model.paginate(args)
+    const result = await repository.paginate(args)
     expect(result).to.deep.equal({
       count: 0,
       edges: [],
@@ -336,53 +262,59 @@ describe('[DB] Repository', () => {
     })
   })
 
-  it('`model.paginate` counts whether there is a previous and next item', async () => {
-    const client = createClient()
-    const context = {
-      utils: {
-        toCursorHash: sinon.stub().callsFake(createdAt => `cursor_hash_${createdAt}`)
-      }
+  it('`DbRepository.paginate` counts whether there is a previous and next item', async () => {
+    const utils = {
+      toCursorHash: sinon.stub().callsFake(createdAt => `cursor_hash_${createdAt}`)
     }
-    const repository = createRepository(client, ['model'], context)
-    repository._wrapperFuncs.findMany = sinon.stub().returns(fakeItems)
-    repository._wrapperFuncs.count = sinon.stub().returns(1)
+    const repository = new DbRepository({}, utils)
+    repository.findMany = sinon.stub().returns(fakeItems)
+    repository.count = sinon.stub().returns(1)
 
-    await repository.model.paginate({})
+    await repository.paginate({})
 
-    sinon.assert.calledWith(repository._wrapperFuncs.count,
-      client,
-      'model',
-      {
-        first: 1,
-        where: {
-          createdAt: { lt: fakeItems[fakeItems.length - 1].createdAt }
-        }
+    sinon.assert.calledWith(repository.count, {
+      first: 1,
+      where: {
+        createdAt: { lt: fakeItems[fakeItems.length - 1].createdAt }
       }
-    )
-    sinon.assert.calledWith(repository._wrapperFuncs.count,
-      client,
-      'model',
-      {
-        first: 1,
-        where: {
-          createdAt: { gt: fakeItems[0].createdAt }
-        }
+    })
+    sinon.assert.calledWith(repository.count, {
+      first: 1,
+      where: {
+        createdAt: { gt: fakeItems[0].createdAt }
       }
-    )
+    })
+  })
+
+  it('`DbRepository.paginate` result reflects whether there is a previous and next item', async () => {
+    const utils = {
+      toCursorHash: sinon.stub().callsFake(createdAt => `cursor_hash_${createdAt}`)
+    }
+    const repository = new DbRepository({}, utils)
+    repository.findMany = sinon.stub().returns(fakeItems)
+    repository.count = sinon.stub().returns(1)
+
+    const result = await repository.paginate({})
+
+    expect(result.pageInfo.hasPrevPage).to.be.true
+    expect(result.pageInfo.hasNextPage).to.be.true
+
+    repository.count = sinon.stub().returns(0)
+    const result2 = await repository.paginate({})
+
+    expect(result2.pageInfo.hasPrevPage).to.be.false
+    expect(result2.pageInfo.hasNextPage).to.be.false
   })
   
-  it('`model.paginate` returns a populated page object if results are found', async () => {
-    const client = createClient()
-    const context = {
-      utils: {
-        toCursorHash: sinon.stub().callsFake(createdAt => `cursor_hash_${createdAt}`)
-      }
+  it('`DbRepository.paginate` returns a populated page object if results are found', async () => {
+    const utils = {
+      toCursorHash: sinon.stub().callsFake(createdAt => `cursor_hash_${createdAt}`)
     }
-    const repository = createRepository(client, ['model'], context)
-    repository._wrapperFuncs.findMany = sinon.stub().returns(fakeItems)
-    repository._wrapperFuncs.count = sinon.stub().returns(1)
+    const repository = new DbRepository({}, utils)
+    repository.findMany = sinon.stub().returns(fakeItems)
+    repository.count = sinon.stub().returns(1)
 
-    const result = await repository.model.paginate({})
+    const result = await repository.paginate({})
 
     expect(result).to.deep.equal({
       count: 3,
