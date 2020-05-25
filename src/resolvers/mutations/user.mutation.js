@@ -1,9 +1,9 @@
 exports.registerUser = async (_parent, args, context) => {
-  const { auth, repository } = context
+  const { auth, userRepository } = context
   const { username, email, password } = args.registerInput
 
   const passwordHash = await auth.hashPassword(password)
-  const user = await repository.user.create({
+  const user = await userRepository.create({
     data: { username, email, passwordHash }
   })
   const token = auth.generateToken(user.id)
@@ -12,10 +12,10 @@ exports.registerUser = async (_parent, args, context) => {
 }
 
 exports.login = async (_parent, args, context) => {
-  const { auth, repository } = context
+  const { auth, userRepository } = context
   const { email, password } = args.loginInput
 
-  const user = await repository.user.findOne({
+  const user = await userRepository.findOne({
     where: { email }
   })
 
