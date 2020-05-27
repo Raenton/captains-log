@@ -1,5 +1,5 @@
-exports.user = (parent, _args, context) => {
-  return context.repository.post.findOne({ 
+exports.user = async (parent, _args, context) => {
+  return await context.postRepository.findOne({ 
     where: { id: parent.id }
   }).user()
 }
