@@ -38,7 +38,7 @@ describe('[Mutations] User', () => {
         .get()
     })
     
-    it('should hash password', async () => {
+    it('hashes the password input', async () => {
       await registerUser(null, args, context)
       sinon.assert.calledOnceWithExactly(
         context.auth.hashPassword,
@@ -46,7 +46,7 @@ describe('[Mutations] User', () => {
       )
     })
   
-    it('should call userRepository.create with args & hashed password', async () => {
+    it('calls userRepository.create with args & hashed password', async () => {
       await registerUser(null, args, context)
       sinon.assert.calledOnceWithExactly(context.userRepository.create, {
         data: {
@@ -57,12 +57,12 @@ describe('[Mutations] User', () => {
       })
     })
   
-    it('should generate a token with id of the created user', async () => {
+    it('generates a token with id of the created user', async () => {
       await registerUser(null, args, context)
       sinon.assert.calledOnceWithExactly(context.auth.generateToken, userId)
     })
   
-    it('should return a created user with token', async () => {
+    it('returns a created user with token', async () => {
       const result = await registerUser(null, args, context)
       expect(result).to.deep.equal({
         user: {
@@ -104,14 +104,14 @@ describe('[Mutations] User', () => {
         .get()
     })
 
-    it('`login` should find a user', async () => {
+    it('finds a user', async () => {
       await login(null, args, context)
       sinon.assert.calledOnceWithExactly(context.userRepository.findOne, {
         where: { email: args.loginInput.email }
       })
     })
   
-    it('`login` should throw an error if user is not found', (done) => {
+    it('throws an error if user is not found', (done) => {
       context.userRepository.findOne = sinon.stub().returns(null)
       login(null, args, context).catch(err => {
         expect(err.message).to.equal('User does not exist')
@@ -119,7 +119,7 @@ describe('[Mutations] User', () => {
       })
     })
   
-    it('`login` should check if password attempt is valid', async () => {
+    it('checks if password attempt is valid', async () => {
       await login(null, args, context)
       sinon.assert.calledOnceWithExactly(
         context.auth.checkPassword,
@@ -128,7 +128,7 @@ describe('[Mutations] User', () => {
       )
     })
   
-    it('`login` should throw an error if password attempt is not valid', (done) => {
+    it('throws an error if password attempt is not valid', (done) => {
       context.auth.checkPassword = sinon.stub().returns(false)
       login(null, args, context).catch(err => {
         expect(err.message).to.equal('Invalid password')
@@ -136,12 +136,12 @@ describe('[Mutations] User', () => {
       })
     })
   
-    it('`login` should generate a token', async () => {
+    it('generates a token with user id', async () => {
       await login(null, args, context)
       sinon.assert.calledOnceWithExactly(context.auth.generateToken, userId)
     })
   
-    it('`login` should return logged in user with token', async () => {
+    it('returns logged in user with token', async () => {
       const data = await login(null, args, context)
       expect(data).to.deep.equal({
         token: 'token',
