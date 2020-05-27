@@ -40,12 +40,12 @@ describe('[Mutations] Post', () => {
         .get()
     })
 
-    it('`post` calls auth.authenticate', async () => {
+    it('authenticates the request', async () => {
       await post(null, args, context)
       sinon.assert.calledOnceWithExactly(context.auth.authenticate, context)
     })
   
-    it('`post` calls postRepository.create with correct args', async () => {
+    it('calls postRepository.create with correct args', async () => {
       await post(null, args, context)
       sinon.assert.calledOnceWithExactly(context.postRepository.create, {
         data: {
@@ -57,7 +57,7 @@ describe('[Mutations] Post', () => {
       })
     })
   
-    it('`post` returns a created post', async () => {
+    it('returns a created post', async () => {
       const result = await post(null, args, context)
       expect(result).to.deep.equal({
         title: args.postInput.title,
@@ -103,19 +103,19 @@ describe('[Mutations] Post', () => {
         .get()
     })
 
-    it('`updatePost` calls auth.authenticate', async () => {
+    it('authenticates the request', async () => {
       await updatePost(null, args, context)
       sinon.assert.calledOnceWithExactly(context.auth.authenticate, context)
     })
   
-    it('`updatePost` calls postRepository.exists with args', async () => {
+    it('calls postRepository.exists with args', async () => {
       await updatePost(null, args, context)
       sinon.assert.calledOnceWithExactly(context.postRepository.exists, {
         where: { id: parseInt(args.postInput.id) }
       })
     })
   
-    it('`updatePost` throws an error if post does not exist', (done) => {
+    it('throws an error if post does not exist', (done) => {
       context.postRepository.exists = sinon.stub().returns(false)
       updatePost(null, args, context).catch(err => {
         expect(err.message).to.equal('Post does not exist')
@@ -123,7 +123,7 @@ describe('[Mutations] Post', () => {
       })
     })
   
-    it('`updatePost` calls postRepository.findOne().user() with args', async () => {
+    it('calls postRepository.findOne().user() with args', async () => {
       await updatePost(null, args, context)
       sinon.assert.calledOnceWithExactly(context.postRepository.findOne, {
         where: { id: args.postInput.id }
@@ -131,7 +131,7 @@ describe('[Mutations] Post', () => {
       sinon.assert.calledOnce(context.postRepository.findOne().user)
     })
   
-    it('`updatePost` throws an error if post does not belong to user', (done) => {
+    it('throws an error if post does not belong to user', (done) => {
       context.postRepository.findOne = () => ({
         user: () => ({
           id: 'not_user_id'
@@ -143,7 +143,7 @@ describe('[Mutations] Post', () => {
       })
     })
   
-    it('`updatePost` calls postRepository.update with args', async () => {
+    it('calls postRepository.update with args', async () => {
       await updatePost(null, args, context)
       sinon.assert.calledOnceWithExactly(context.postRepository.update, sinon.match({
         data: {
@@ -158,7 +158,7 @@ describe('[Mutations] Post', () => {
       }))
     })
   
-    it('`updatePost` returns an updated post', async () => {
+    it('returns an updated post', async () => {
       const result = await updatePost(null, args, context)
       expect(result).to.deep.equal({
         id: args.postInput.id
@@ -196,19 +196,19 @@ describe('[Mutations] Post', () => {
         .get()
     })
 
-    it('`deletePost` calls auth.authenticate', async () => {
+    it('authenticates the request', async () => {
       await deletePost(null, args, context)
       sinon.assert.calledOnceWithExactly(context.auth.authenticate, context)
     })
   
-    it('`deletePost` calls postRepository.exists with args', async () => {
+    it('calls postRepository.exists with args', async () => {
       await deletePost(null, args, context)
       sinon.assert.calledOnceWithExactly(context.postRepository.exists, {
         where: { id: args.id }
       })
     })
   
-    it('`deletePost` throws an error if post does not exist', (done) => {
+    it('throws an error if post does not exist', (done) => {
       context.postRepository.exists = sinon.stub().returns(false)
       deletePost(null, args, context).catch(err => {
         expect(err.message).to.equal('Post does not exist')
@@ -216,7 +216,7 @@ describe('[Mutations] Post', () => {
       })
     })
   
-    it('`deletePost` calls postRepository.findOne().user() with args', async () => {  
+    it('calls postRepository.findOne().user() with args', async () => {  
       await deletePost(null, args, context)
       sinon.assert.calledOnceWithExactly(context.postRepository.findOne, {
         where: { id: args.id }
@@ -224,7 +224,7 @@ describe('[Mutations] Post', () => {
       sinon.assert.calledOnce(context.postRepository.findOne().user)
     })
   
-    it('`deletePost` throws an error if post does not belong to user', (done) => {
+    it('throws an error if post does not belong to user', (done) => {
       context.postRepository.findOne = () => ({
         user: () => ({
           id: 'not_user_id'
@@ -237,14 +237,14 @@ describe('[Mutations] Post', () => {
       })
     })
   
-    it('`deletePost` calls postRepository.deleteOne with args', async () => {
+    it('calls postRepository.deleteOne with args', async () => {
       await deletePost(null, args, context)
       sinon.assert.calledOnceWithExactly(context.postRepository.deleteOne, {
         where: { id: parseInt(args.id) }
       })
     })
   
-    it('`deletePost` returns deleted post', async () => {
+    it('returns deleted post', async () => {
       const result = await deletePost(null, args, context)
       expect(result).to.deep.equal({ id: args.id })
     })
