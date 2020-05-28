@@ -1,6 +1,6 @@
 exports.posts = async (parent, args, context) => {
   const { first, last, before, after } = args.paginationInput
-  return await context.repository.post.paginate({
+  return await context.postRepository.paginate({
     where: {
       user: { id: parent.id }
     },
