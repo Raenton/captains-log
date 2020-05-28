@@ -4,72 +4,77 @@ const {
 } = require('../../../src/resolvers/queries/user.query')
 const sinon = require('sinon')
 const expect = require('chai').expect
+const { contextBuilder } = require('../../helpers/contextHelper')
 
-describe('[Queries] User', () => {
-  
-  it('`users` returns a pagination call', (done) => {
-    const paginationResponse = {
-      //...edges would go here (x10 users)
-      pageInfo: {
-        hasNextPage: true,
-        hasPrevPage: true
-      }
-    }
+describe.only('[Queries] User', () => {
 
-    const context = {
-      repository: {
-        user: {
-          paginate: sinon.stub().returns(paginationResponse)
-        }
-      }
-    }
+  describe('users', () => {
 
     const paginationInput = {
       first: 10,
       after: 'abcdefghjkl' 
     }
-    
-    users(null, { paginationInput }, context).then(data => {
-      expect(data).to.equal(paginationResponse)
-      done()
+
+    let context
+
+    beforeEach(() => {
+      context = contextBuilder
+        .reset()
+        .userRepository({
+          paginate: sinon.stub().returns({})
+        })
+        .get()
     })
+
+    it('calls userRepository.paginate with args', async () => {
+      await users(null, { paginationInput }, context)
+      sinon.assert.calledOnceWithExactly(context.userRepository.paginate, paginationInput)
+    })
+
+    it('returns the pagination response', async () => {
+      const result = await users(null, { paginationInput }, context)
+      expect(result).to.deep.equal({})
+    })
+
   })
+  
+  describe('user', () => {
 
-  it('`user` finds a user with args', (done) => {
-    const userResponse = {
-      id: 1,
-      title: 'post'
-    }
-    const context = {
-      repository: {
-        user: {
-          findOne: sinon.stub().returns(userResponse)
-        }
-      }
-    }
+    let context
 
-    user(null, { id: 1 }, context).then(data => {
-      sinon.assert.calledOnceWithExactly(context.repository.user.findOne, {
+    beforeEach(() => {
+      context = contextBuilder
+        .reset()
+        .userRepository({
+          findOne: sinon.stub().returns({
+            id: 1
+          })
+        })
+        .get()
+    })
+
+    it('calls userRepository.findOne with args', async () => {
+      await user(null, { id: 1 }, context)
+      sinon.assert.calledOnceWithExactly(context.userRepository.findOne, {
         where: { id: 1 }
       })
-      expect(data).to.equal(userResponse)
-      done()
     })
-  })
 
-  it('`user` throws an error if the user does not exist', (done) => {
-    const context = {
-      repository: {
-        user: {
-          findOne: sinon.stub().returns(null)
-        }
-      }
-    }
-
-    user(null, { id: 2 }, context).catch(err => {
-      expect(err.message).to.equal('User does not exist')
-      done()
+    it('returns the found user', async () => {
+      const result = await user(null, { id: 1 }, context)
+      expect(result).to.deep.equal({
+        id: 1
+      })
     })
+
+    it('throws an error if the user does not exist', (done) => {
+      context.userRepository.findOne = () => null
+      user(null, { id: 2 }, context).catch(err => {
+        expect(err.message).to.equal('User does not exist')
+        done()
+      })
+    })
+
   })
 
 })
