@@ -1,9 +1,9 @@
 exports.post = async (_parent, args, context) => {
-  const { auth, prisma } = context
+  const { auth, postRepository } = context
   const { title, body, description } = args.postInput
 
   const userId = auth.authenticate(context)
-  const post = await prisma.post.create({
+  return postRepository.create({
     data: {
       title,
       body,
@@ -11,47 +11,46 @@ exports.post = async (_parent, args, context) => {
       user: { connect: { id: userId }}
     }
   })
-  return post
 }
 
 exports.updatePost = async (_parent, args, context) => {
-  const { auth, prisma } = context
+  const { auth, postRepository } = context
   const { id, title, body, description } = args.postInput
   const userId = auth.authenticate(context)
   const postWhere = { id: parseInt(id) }
   
-  const post = await prisma.post.findOne({ where: postWhere })
+  const exists = await postRepository.exists({ where: postWhere })
 
-  if (!post) {
+  if (!exists) {
     throw new Error('Post does not exist')
   }
 
-  const postUser = await prisma.post.findOne({ where: postWhere }).user()
+  const postUser = await postRepository.findOne({ where: postWhere }).user()
   if (userId !== postUser.id) {
     throw new Error('You can not edit another users post')
   }
 
-  return prisma.post.update({
+  return postRepository.update({
     data: { title, body, description, updatedAt: new Date() },
     where: postWhere
   })
 }
 
 exports.deletePost = async (_parent, args, context) => {
-  const { auth, prisma } = context
+  const { auth, postRepository } = context
   const postWhere = { id: parseInt(args.id) }
   const userId = auth.authenticate(context)
 
-  const post = await prisma.post.findOne({ where: postWhere })
+  const exists = await postRepository.exists({ where: postWhere })
 
-  if (!post) {
+  if (!exists) {
     throw new Error('Post does not exist')
   }
 
-  const postUser = await prisma.post.findOne({ where: postWhere }).user()
+  const postUser = await postRepository.findOne({ where: postWhere }).user()
   if (userId !== postUser.id) {
     throw new Error('You can not delete another users post')
   }
 
-  return prisma.post.delete({ where: postWhere })
+  return postRepository.deleteOne({ where: postWhere })
 }

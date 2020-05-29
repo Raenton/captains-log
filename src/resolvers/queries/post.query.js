@@ -1,9 +1,9 @@
 exports.posts = async (_parent, args, context) => {
-  return await context.utils.paginate(args.paginationInput, context, 'post')
+  return context.postRepository.paginate(args.paginationInput)
 }
 
 exports.post = async (_parent, args, context) => {
-  const post = await context.prisma.post.findOne({
+  const post = await context.postRepository.findOne({
     where: { id: parseInt(args.id) }
   })
   if (!post) {
