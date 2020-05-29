@@ -7,7 +7,8 @@
     "start": "node src/index.js",
     "dev": "nodemon --inspect=12345 src/index.js",
     "test": "mocha --recursive",
-    "test:watch": "mocha --recursive --watch"
+    "test:watch": "mocha --recursive --watch",
+    "lint": "eslint ./src"
   },
   "nodemonConfig": {
     "env": {
@@ -16,7 +17,9 @@
   },
   "devDependencies": {
     "@prisma/cli": "^2.0.0-beta.5",
+    "babel-eslint": "^10.1.0",
     "chai": "^4.2.0",
+    "eslint": "^7.1.0",
     "mocha": "^7.1.2",
     "nodemon": "^2.0.3",
     "sinon": "^9.0.2"
