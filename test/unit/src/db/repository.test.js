@@ -1,6 +1,6 @@
 const sinon = require('sinon')
 const expect = require('chai').expect
-const { DbRepository } = require('../../src/db/repository')
+const { DbRepository } = require('../../../../src/db/repository')
 
 const fakeItems = [
   {
@@ -226,8 +226,8 @@ describe('[DB] DbRepository', () => {
     
     it('makes a query with args with `before` cursor', async () => {
       const utils = {
-          fromCursorHash: sinon.stub().callsFake(args => args)
-        }
+        fromCursorHash: sinon.stub().callsFake(args => args)
+      }
       const repository = new DbRepository({}, utils)
       repository.findMany = sinon.stub().returns([])
   

@@ -3,7 +3,7 @@ const sinon = require('sinon')
 const {
   toCursorHash,
   fromCursorHash
-} = require('../../src/utils/utils')
+} = require('../../../../src/utils/utils')
 
 describe('[Utils]', () => {
 

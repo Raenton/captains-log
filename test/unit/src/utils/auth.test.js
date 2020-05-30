@@ -2,8 +2,8 @@ const sinon = require('sinon')
 const sinonTest = require('sinon-test')
 const test = sinonTest(sinon)
 const expect = require('chai').expect
-const Auth = require('../../src/utils/auth')
-const { SECRET } = require('../../src/config')
+const Auth = require('../../../../src/utils/auth')
+const { SECRET } = require('../../../../src/config')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 

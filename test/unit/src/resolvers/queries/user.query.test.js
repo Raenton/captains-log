@@ -1,10 +1,10 @@
 const {
   users,
   user
-} = require('../../../src/resolvers/queries/user.query')
+} = require('../../../../../src/resolvers/queries/user.query')
 const sinon = require('sinon')
 const expect = require('chai').expect
-const { contextBuilder } = require('../../helpers/contextHelper')
+const { contextBuilder } = require('../../../helpers/contextBuilder')
 
 describe('[Queries] User', () => {
 

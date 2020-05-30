@@ -2,10 +2,10 @@ const {
   post,
   updatePost,
   deletePost
-} = require('../../../src/resolvers/mutations/post.mutation')
+} = require('../../../../../src/resolvers/mutations/post.mutation')
 const sinon = require('sinon')
 const expect = require('chai').expect
-const { contextBuilder } = require('../../helpers/contextHelper')
+const { contextBuilder } = require('../../../helpers/contextBuilder')
 
 describe('[Mutations] Post', () => {
 

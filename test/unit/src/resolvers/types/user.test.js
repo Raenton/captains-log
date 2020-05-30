@@ -1,23 +1,23 @@
-const User = require('../../../src/resolvers/types/User')
+const User = require('../../../../../src/resolvers/types/User')
 const sinon = require('sinon')
 const expect = require('chai').expect
-const { contextBuilder } = require('../../helpers/contextHelper')
+const { contextBuilder } = require('../../../helpers/contextBuilder')
 
 describe('[Types] User', () => {
 
   let context
 
-    beforeEach(() => {
-      context = contextBuilder
-        .reset()
-        .postRepository({
-          paginate: sinon.stub().returns({})
-        })
-        .auth({
-          getUserId: sinon.stub().returns(1)
-        })
-        .get()
-    })
+  beforeEach(() => {
+    context = contextBuilder
+      .reset()
+      .postRepository({
+        paginate: sinon.stub().returns({})
+      })
+      .auth({
+        getUserId: sinon.stub().returns(1)
+      })
+      .get()
+  })
 
   describe('posts', () => {
 
