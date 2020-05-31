@@ -6,10 +6,10 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon --inspect=12345 src/index.js",
-    "test": "mocha --recursive ./test/unit/**/*.test.js",
-    "test:watch": "mocha --recursive --watch ./test/unit/**/*.test.js",
-    "integration": "mocha -c ./test/integration/.mocharc.js --recursive ./test/integration/**/*.test.js",
-    "integration:watch": "mocha -c ./test/integration/.mocharc.js --recursive --watch ./test/integration/**/*.test.js",
+    "test": "mocha ./test/unit/src/**/*",
+    "test:watch": "mocha -w ./test/unit/src/**/*",
+    "integration": "mocha ./test/integration/src/**/*",
+    "integration:watch": "mocha -w ./test/integration/src/**/*",
     "lint": "eslint ./src"
   },
   "nodemonConfig": {
