@@ -1,9 +1,9 @@
 const {
   user
-} = require('../../../../../src/resolvers/types/Post')
+} = require('../../../../src/resolvers/types/Post')
 const sinon = require('sinon')
 const expect = require('chai').expect
-const { contextBuilder } = require('../../../helpers/contextBuilder')
+const { contextBuilder } = require('../../helpers/contextBuilder')
 
 describe('[Types] Post', () => {
 

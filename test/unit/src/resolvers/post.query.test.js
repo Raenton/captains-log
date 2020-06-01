@@ -1,10 +1,10 @@
 const {
   posts,
   post
-} = require('../../../../../src/resolvers/queries/post.query')
+} = require('../../../../src/resolvers/queries/post.query')
 const sinon = require('sinon')
 const expect = require('chai').expect
-const { contextBuilder } = require('../../../helpers/contextBuilder')
+const { contextBuilder } = require('../../helpers/contextBuilder')
 
 describe('[Queries] Post', () => {
 

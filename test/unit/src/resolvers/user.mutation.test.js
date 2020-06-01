@@ -1,10 +1,10 @@
 const {
   registerUser,
   login
-} = require('../../../../../src/resolvers/mutations/user.mutation')
+} = require('../../../../src/resolvers/mutations/user.mutation')
 const sinon = require('sinon')
 const expect = require('chai').expect
-const { contextBuilder } = require('../../../helpers/contextBuilder')
+const { contextBuilder } = require('../../helpers/contextBuilder')
 
 describe('[Mutations] User', () => {
 
