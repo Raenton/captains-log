@@ -3,7 +3,9 @@ const { DbRepository } = require('./db/repository')
 const auth = require('./utils/auth')
 const utils = require('./utils/utils')
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({
+  errorFormat: 'minimal'
+})
 
 const context = {
   userRepository: new DbRepository(prisma.user, utils),
