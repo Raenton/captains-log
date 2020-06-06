@@ -8,8 +8,8 @@
     "dev": "nodemon --inspect=12345 src/index.js",
     "test": "mocha ./test/unit/src/**/*.js",
     "test:watch": "mocha -w ./test/unit/src/**/*.js",
-    "integration": "NODE_ENV=test mocha ./test/integration/src/**/*.js",
-    "integration:watch": "NODE_ENV=test mocha -w ./test/integration/src/**/*.js",
+    "integration": "mocha --file ./test/integration/init.test.js ./test/integration/src/**/*.js",
+    "integration:watch": "mocha -w --file ./test/integration/init.test.js ./test/integration/src/**/*.js",
     "lint": "eslint ./src"
   },
   "nodemonConfig": {
