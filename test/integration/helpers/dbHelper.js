@@ -13,3 +13,8 @@ exports.findOrCreateUser = async ({ username, email, password }) => {
     data: { username, email, passwordHash }
   })
 }
+
+exports.clear = async () => {
+  await prisma.user.deleteMany()
+  await prisma.post.deleteMany()
+}
