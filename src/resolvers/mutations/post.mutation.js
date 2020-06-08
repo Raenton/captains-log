@@ -3,7 +3,7 @@ exports.post = async (_parent, args, context) => {
   const { title, body, description } = args.postInput
 
   const userId = auth.authenticate(context)
-  return postRepository.create({
+  return await postRepository.create({
     data: {
       title,
       body,
@@ -17,40 +17,44 @@ exports.updatePost = async (_parent, args, context) => {
   const { auth, postRepository } = context
   const { id, title, body, description } = args.postInput
   const userId = auth.authenticate(context)
-  const postWhere = { id: parseInt(id) }
+  const where = { id: parseInt(id) }
   
-  const exists = await postRepository.exists({ where: postWhere })
+  const exists = await postRepository.exists({ where })
 
   if (!exists) {
     throw new Error('Post does not exist')
   }
 
-  const postUser = await postRepository.findOne({ where: postWhere }).user()
+  const postUser = await postRepository.findOne({ where }).user()
   if (userId !== postUser.id) {
     throw new Error('You can not edit another users post')
   }
 
-  return postRepository.update({
-    data: { title, body, description, updatedAt: new Date() },
-    where: postWhere
-  })
+  const data = {
+    title,
+    body,
+    description,
+    updatedAt: new Date()
+  }
+
+  return await postRepository.update({ data, where })
 }
 
 exports.deletePost = async (_parent, args, context) => {
   const { auth, postRepository } = context
-  const postWhere = { id: parseInt(args.id) }
+  const where = { id: parseInt(args.id) }
   const userId = auth.authenticate(context)
 
-  const exists = await postRepository.exists({ where: postWhere })
+  const exists = await postRepository.exists({ where })
 
   if (!exists) {
     throw new Error('Post does not exist')
   }
 
-  const postUser = await postRepository.findOne({ where: postWhere }).user()
+  const postUser = await postRepository.findOne({ where }).user()
   if (userId !== postUser.id) {
     throw new Error('You can not delete another users post')
   }
 
-  return postRepository.deleteOne({ where: postWhere })
+  return await postRepository.deleteOne({ where })
 }
