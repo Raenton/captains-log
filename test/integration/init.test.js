@@ -1,9 +1,11 @@
 const path = require('path')
-const dbHelper = require('./helpers/dbHelper')
-
+// always do this before importing anything that might otherwise
+// import any app config
 require('dotenv').config({
   path: path.resolve(process.cwd(), '.env.test')
 })
+
+const dbHelper = require('./helpers/dbHelper')
 
 function clearDb(done) {
   dbHelper.clear().then(
