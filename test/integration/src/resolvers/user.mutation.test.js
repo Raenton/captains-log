@@ -4,11 +4,13 @@ const {
   loginInput
 } = require('../../fixtures')
 const dbHelper = require('../../helpers/dbHelper')
-const context = require('../../../../src/context')
+const { buildContext } = require('../../helpers/contextBuilder')
 const User = require('../../../../src/resolvers/mutations/user.mutation')
 
+const context = buildContext()
+
 describe('[Mutations] User', function() {
-  
+
   describe('registerUser', function() {
     
     beforeEach(done => {
