@@ -22,9 +22,12 @@ describe('[Mutations] User', function() {
         registerInput: registerInput
       }, context)
       expect(response.token).to.be.string
-      expect(response.user.username).to.equal('test_user')
-      expect(response.user.email).to.equal('test@mail.com')
-      expect(response.user)
+      expect(response.user.id).to.exist
+      expect(response.user.username).to.equal(registerInput.username)
+      expect(response.user.email).to.equal(registerInput.email)
+      expect(response.user.createdAt).to.exist
+      expect(response.user.updatedAt).to.exist
+      expect(response.user.passwordHash).to.exist
     })
 
     it('throws an error by violation of unique username constraint', function(done) {
@@ -81,9 +84,12 @@ describe('[Mutations] User', function() {
       }, context)
 
       expect(response.token).to.be.string
-      expect(response.user.username).to.equal('test_user')
-      expect(response.user.email).to.equal('test@mail.com')
-      expect(response.user)
+      expect(response.user.id).to.exist
+      expect(response.user.username).to.equal(registerInput.username)
+      expect(response.user.email).to.equal(registerInput.email)
+      expect(response.user.createdAt).to.exist
+      expect(response.user.updatedAt).to.exist
+      expect(response.user.passwordHash).to.exist
     })
 
     it('throws an error if user does not exist', function(done) {
