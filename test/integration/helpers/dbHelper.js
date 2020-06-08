@@ -21,8 +21,12 @@ exports.clear = async () => {
   await prisma.user.deleteMany()
 }
 
-exports.loginAsTest = async () => {
-  const user = await this.findOrCreateUser(fixtures.registerInput)
+/**
+ * you can emit parameters to login as default test user.
+ * will create user if it doesn't exist.
+ */
+exports.loginAsTest = async (args = null) => {
+  const user = await this.findOrCreateUser(args || fixtures.registerInput)
   const token = auth.generateToken(user.id)
   return { user, token }
 }
