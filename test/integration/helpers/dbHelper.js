@@ -1,5 +1,7 @@
 const { PrismaClient } = require('@prisma/client')
 const bcrypt = require('bcryptjs')
+const fixtures = require('../fixtures/index')
+const auth = require('../../../src/utils/auth')
 const prisma = new PrismaClient()
 
 exports.findOrCreateUser = async ({ username, email, password }) => {
@@ -18,3 +20,10 @@ exports.clear = async () => {
   await prisma.user.deleteMany()
   await prisma.post.deleteMany()
 }
+
+exports.loginAsTest = async () => {
+  const user = await this.findOrCreateUser(fixtures.registerInput)
+  const token = auth.generateToken(user.id)
+  return { user, token }
+}
+
