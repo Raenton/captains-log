@@ -6,8 +6,9 @@ exports.user = async (_parent, args, context) => {
   const user = await context.userRepository.findOne({
     where: { id: parseInt(args.id) }
   })
-  if (!user) {
+  if (user) {
+    return user
+  } else {
     throw new Error('User does not exist')
   }
-  return user
 }
