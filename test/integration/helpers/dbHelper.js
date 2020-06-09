@@ -34,3 +34,30 @@ exports.loginAsTest = async (args) => {
   return { user, token }
 }
 
+/**
+ * create many posts with the data, belonging to provided user.
+ * you may get a user from loginAsTest or findOrCreateUser
+ */
+exports.createManyPosts = async (posts, user) => {
+  const created = []
+  for (let post of posts) {
+    const response = await prisma.post.create({
+      data: {
+        ...post,
+        user: { connect: { id: user.id } }
+      }
+    })
+    created.push(response)
+  }
+  return created
+}
+
+exports.createManyUsers = async (users) => {
+  const created = []
+  for (let user of users) {
+    const response = await prisma.user.create(user)
+    created.push(response)
+  }
+  return created
+}
+
