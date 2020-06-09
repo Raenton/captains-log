@@ -91,10 +91,7 @@ describe('[Mutations] Post', () => {
         .postRepository({
           exists: sinon.stub().returns(true),
           findOne: sinon.stub().returns({
-            //...post fields
-            user: sinon.stub().returns({
-              id: userId
-            })
+            authorId: userId
           }),
           update: sinon.stub().callsFake((args) => ({
             id: args.where.id
@@ -108,34 +105,17 @@ describe('[Mutations] Post', () => {
       sinon.assert.calledOnceWithExactly(context.auth.authenticate, context)
     })
   
-    it('calls postRepository.exists with args', async () => {
-      await updatePost(null, args, context)
-      sinon.assert.calledOnceWithExactly(context.postRepository.exists, {
-        where: { id: parseInt(args.postInput.id) }
-      })
-    })
-  
     it('throws an error if post does not exist', (done) => {
-      context.postRepository.exists = sinon.stub().returns(false)
+      context.postRepository.findOne = sinon.stub().returns(null)
       updatePost(null, args, context).catch(err => {
         expect(err.message).to.equal('Post does not exist')
         done()
       })
     })
   
-    it('calls postRepository.findOne().user() with args', async () => {
-      await updatePost(null, args, context)
-      sinon.assert.calledOnceWithExactly(context.postRepository.findOne, {
-        where: { id: args.postInput.id }
-      })
-      sinon.assert.calledOnce(context.postRepository.findOne().user)
-    })
-  
     it('throws an error if post does not belong to user', (done) => {
       context.postRepository.findOne = () => ({
-        user: () => ({
-          id: 'not_user_id'
-        })
+        authorId: 999
       })
       updatePost(null, args, context).catch(err => {
         expect(err.message).to.equal('You can not edit another users post')
@@ -184,10 +164,7 @@ describe('[Mutations] Post', () => {
         .postRepository({
           exists: sinon.stub().returns(true),
           findOne: sinon.stub().returns({
-            //...post fields
-            user: sinon.stub().returns({
-              id: userId
-            })
+            authorId: userId
           }),
           deleteOne: sinon.stub().callsFake((args) => ({
             id: args.where.id
@@ -201,27 +178,12 @@ describe('[Mutations] Post', () => {
       sinon.assert.calledOnceWithExactly(context.auth.authenticate, context)
     })
   
-    it('calls postRepository.exists with args', async () => {
-      await deletePost(null, args, context)
-      sinon.assert.calledOnceWithExactly(context.postRepository.exists, {
-        where: { id: args.id }
-      })
-    })
-  
     it('throws an error if post does not exist', (done) => {
-      context.postRepository.exists = sinon.stub().returns(false)
+      context.postRepository.findOne = sinon.stub().returns(null)
       deletePost(null, args, context).catch(err => {
         expect(err.message).to.equal('Post does not exist')
         done()
       })
-    })
-  
-    it('calls postRepository.findOne().user() with args', async () => {  
-      await deletePost(null, args, context)
-      sinon.assert.calledOnceWithExactly(context.postRepository.findOne, {
-        where: { id: args.id }
-      })
-      sinon.assert.calledOnce(context.postRepository.findOne().user)
     })
   
     it('throws an error if post does not belong to user', (done) => {

@@ -1,8 +1,8 @@
 exports.post = async (_parent, args, context) => {
   const { auth, postRepository } = context
   const { title, body, description } = args.postInput
-
   const userId = auth.authenticate(context)
+  
   return await postRepository.create({
     data: {
       title,
@@ -18,43 +18,40 @@ exports.updatePost = async (_parent, args, context) => {
   const { id, title, body, description } = args.postInput
   const userId = auth.authenticate(context)
   const where = { id: parseInt(id) }
-  
-  const exists = await postRepository.exists({ where })
+  const post = await postRepository.findOne({ where })
 
-  if (!exists) {
+  if (post) {
+    if (userId === post.authorId) {
+      return await postRepository.update({
+        data: {
+          title,
+          body,
+          description,
+          updatedAt: new Date()
+        },
+        where
+      })
+    } else {
+      throw new Error('You can not edit another users post')
+    }
+  } else {
     throw new Error('Post does not exist')
   }
-
-  const postUser = await postRepository.findOne({ where }).user()
-  if (userId !== postUser.id) {
-    throw new Error('You can not edit another users post')
-  }
-
-  const data = {
-    title,
-    body,
-    description,
-    updatedAt: new Date()
-  }
-
-  return await postRepository.update({ data, where })
 }
 
 exports.deletePost = async (_parent, args, context) => {
   const { auth, postRepository } = context
-  const where = { id: parseInt(args.id) }
   const userId = auth.authenticate(context)
+  const where = { id: parseInt(args.id) }
+  const post = await postRepository.findOne({ where })
 
-  const exists = await postRepository.exists({ where })
-
-  if (!exists) {
+  if (post) {
+    if (userId === post.authorId) {
+      return await postRepository.deleteOne({ where })
+    } else {
+      throw new Error('You can not delete another users post')
+    }
+  } else {
     throw new Error('Post does not exist')
   }
-
-  const postUser = await postRepository.findOne({ where }).user()
-  if (userId !== postUser.id) {
-    throw new Error('You can not delete another users post')
-  }
-
-  return await postRepository.deleteOne({ where })
 }
