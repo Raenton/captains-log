@@ -76,7 +76,8 @@ describe('[Mutations] Post', () => {
         id: 123,
         title: 'updated_title',
         body: 'updated_body',
-        description: 'updated_description'
+        description: 'updated_description',
+        published: true
       }
     }
 
@@ -130,7 +131,8 @@ describe('[Mutations] Post', () => {
           title: args.postInput.title,
           body: args.postInput.body,
           description: args.postInput.description,
-          updatedAt: sinon.match.date
+          updatedAt: sinon.match.date,
+          published: args.postInput.published
         },
         where: {
           id: args.postInput.id

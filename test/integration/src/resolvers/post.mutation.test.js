@@ -67,9 +67,7 @@ describe('[Mutations] Post', () => {
       const updatedPost = await Post.updatePost(null, {
         postInput: {
           id: createdPost.id,
-          title: fixtures.updatePostInput.title,
-          body: fixtures.updatePostInput.body,
-          description: fixtures.updatePostInput.description
+          ...fixtures.updatePostInput
         }
       }, context)
 
@@ -77,10 +75,10 @@ describe('[Mutations] Post', () => {
       expect(updatedPost.authorId).to.equal(createdPost.authorId)
       expect(updatedPost.createdAt.getTime()).to.equal(createdPost.createdAt.getTime())
       expect(updatedPost.updatedAt.getTime()).to.be.greaterThan(createdPost.updatedAt.getTime())
-      expect(updatedPost.published).to.equal(createdPost.published)
       expect(updatedPost.title).to.equal(fixtures.updatePostInput.title)
       expect(updatedPost.body).to.equal(fixtures.updatePostInput.body)
       expect(updatedPost.description).to.equal(fixtures.updatePostInput.description)
+      expect(updatedPost.published).to.equal(fixtures.updatePostInput.published)
     })
 
     it('should throw an error if not authenticated', function(done) {

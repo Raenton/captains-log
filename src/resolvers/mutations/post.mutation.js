@@ -2,7 +2,7 @@ exports.post = async (_parent, args, context) => {
   const { auth, postRepository } = context
   const { title, body, description } = args.postInput
   const userId = auth.authenticate(context)
-  
+
   return await postRepository.create({
     data: {
       title,
@@ -15,7 +15,7 @@ exports.post = async (_parent, args, context) => {
 
 exports.updatePost = async (_parent, args, context) => {
   const { auth, postRepository } = context
-  const { id, title, body, description } = args.postInput
+  const { id, title, body, description, published } = args.postInput
   const userId = auth.authenticate(context)
   const where = { id: parseInt(id) }
   const post = await postRepository.findOne({ where })
@@ -27,6 +27,7 @@ exports.updatePost = async (_parent, args, context) => {
           title,
           body,
           description,
+          published,
           updatedAt: new Date()
         },
         where

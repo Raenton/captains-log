@@ -16,6 +16,7 @@ module.exports = {
   updatePostInput: {
     title: 'Updated Post',
     body: 'Updated Post Body',
-    description: 'Updated Post Description'
+    description: 'Updated Post Description',
+    published: true
   }
 }
