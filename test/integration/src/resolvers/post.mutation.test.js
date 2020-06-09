@@ -4,13 +4,11 @@ const dbHelper = require('../../helpers/dbHelper')
 const { buildContext } = require('../../helpers/contextBuilder')
 const Post = require('../../../../src/resolvers/mutations/post.mutation')
 
-describe('[Mutations] Post', () => {
+describe('[Mutations] Post', function() {
   
-  describe('post', () => {
+  describe('post', function() {
    
-    beforeEach((done) => {
-      dbHelper.clear().then(() => done())
-    })
+    beforeEach(async () => await dbHelper.clear())
 
     it('should return a new post (success)', async function() {
       const { user, token } = await dbHelper.loginAsTest()
@@ -49,11 +47,9 @@ describe('[Mutations] Post', () => {
 
   })
 
-  describe('updatePost', () => {
+  describe('updatePost', function() {
 
-    beforeEach((done) => {
-      dbHelper.clear().then(() => done())
-    })
+    beforeEach(async () => await dbHelper.clear())
 
     it('returns an updated post (success)', async function() {
       const { token } = await dbHelper.loginAsTest()
@@ -141,7 +137,9 @@ describe('[Mutations] Post', () => {
 
   })
   
-  describe('deletePost', () => {
+  describe('deletePost', function() {
+
+    beforeEach(async () => await dbHelper.clear())
 
     it('should return the deleted post (success)', async function() {
       const { token } = await dbHelper.loginAsTest()
