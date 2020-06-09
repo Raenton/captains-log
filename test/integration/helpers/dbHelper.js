@@ -52,10 +52,16 @@ exports.createManyPosts = async (posts, user) => {
   return created
 }
 
-exports.createManyUsers = async (users) => {
+exports.createManyUsers = async (users = fixtures.users) => {
   const created = []
   for (let user of users) {
-    const response = await prisma.user.create(user)
+    const response = await prisma.user.create({
+      data: {
+        username: user.username,
+        email: user.email,
+        passwordHash: await bcrypt.hash(user.password, 10)
+      }
+    })
     created.push(response)
   }
   return created
