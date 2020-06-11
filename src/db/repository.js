@@ -25,6 +25,11 @@ class DbRepository {
   exists = async (args) =>
     Boolean(await this.findOne(args))
 
+  /**
+   * this is deeply in need of revision.
+   * however, for the sake of getting something working
+   * before fussing over the details, it is being left as is.
+   */
   paginate = async (args) => {
     const { select, where = {}, first, last, before, after } = args
   
