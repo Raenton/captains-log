@@ -5,7 +5,7 @@ Please excuse the silly name, I was thinking of pirates when I started this.
 This project aims to act as a blog platform similar to Medium. Multiple-user able,
 Users can sign up, create posts, like, view and comment on the posts of other users.
 
-Built with GraphQL and Prisma v1.0, (the smooth, configurable interfaces and SDLs that I love).
+Built with GraphQL and Prisma v1.0.
 
 ## Prerequisites
 
