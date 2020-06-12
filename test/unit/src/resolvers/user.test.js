@@ -1,4 +1,4 @@
-const User = require('../../../../src/resolvers/types/User')
+const User = require('../../../../src/resolvers/types/user')
 const sinon = require('sinon')
 const expect = require('chai').expect
 const { contextBuilder } = require('../../helpers/contextBuilder')
