@@ -41,15 +41,20 @@ exports.loginAsTest = async (args) => {
 exports.createManyPosts = async (posts, user) => {
   const created = []
   for (let post of posts) {
-    const response = await prisma.post.create({
-      data: {
-        ...post,
-        user: { connect: { id: user.id } }
-      }
-    })
+    const response = this.createPost(post, user)
     created.push(response)
   }
   return created
+}
+
+exports.createPost = async (post, user) => {
+  const response = await prisma.post.create({
+    data: {
+      ...post,
+      user: { connect: { id: user.id } }
+    }
+  })
+  return response
 }
 
 exports.createManyUsers = async (users = fixtures.users) => {
