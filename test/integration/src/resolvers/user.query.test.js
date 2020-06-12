@@ -59,14 +59,7 @@ describe('[Queries] User', function() {
 
       const result = await User.user(null, { id: user.id }, context)
 
-      sinon.assert.match(result, {
-        id: user.id,
-        createdAt: sinon.match.date,
-        updatedAt: sinon.match.date,
-        username: user.username,
-        email: user.email,
-        passwordHash: sinon.match.string
-      })
+      sinon.assert.match(result, user)
     })
 
     it('should throw an error if the user does not exist', function(done) {
