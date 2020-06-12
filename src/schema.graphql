@@ -39,6 +39,7 @@ type Post implements Node {
   title: String!
   description: String
   body: String
+  published: Boolean!
   user: User!
   likes: [Like!]!
 }
@@ -98,6 +99,7 @@ input UpdatePostInput {
   title: String!
   description: String
   body: String
+  published: Boolean
 }
 
 input PaginationInput {
